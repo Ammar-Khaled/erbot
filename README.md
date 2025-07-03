@@ -12,6 +12,36 @@ A production-ready Retrieval-Augmented Generation (RAG) chatbot that combines Pi
 - **Security First**: Environment-based credential management
 - **Rich Metadata**: Detailed source attribution and performance metrics
 
+## Technologies Used
+
+This project leverages a comprehensive technology stack to deliver a robust RAG chatbot solution:
+
+### Vector Database & Search
+- **Pinecone**: Cloud-based vector database for storing and retrieving document embeddings
+   - *Purpose*: Efficient semantic search across document collections with similarity matching
+   - *Benefits*: Scalable, managed service with sub-second query performance
+
+### Language Models & AI Services
+- **DeepSeek Model**: Advanced large language model for response generation
+- **Azure AI Inference**: Microsoft's standardized service for AI model access
+
+### Embeddings & Machine Learning
+- **BAAI/bge-small-en-v1.5**: State-of-the-art embedding model (384 dimensions)
+- **LangChain HuggingFace**: HuggingFace model connectors
+   - *Purpose*: Converting text into vector embeddings for similarity matching
+   - *Benefits*: Free, high-quality embeddings with excellent retrieval performance
+
+### Document Processing
+- **DirectoryLoader**: Multi-format document loading system
+- **RecursiveCharacterTextSplitter**: Intelligent text chunking
+   - *Purpose*: Converting various document formats into processable text chunks
+   - *Benefits*: Handles multiple formats with optimal chunk sizing for retrieval
+
+### Architecture Pattern
+- **RAG (Retrieval-Augmented Generation)**: Combines document retrieval with language generation
+   - *Purpose*: Provides accurate, context-aware responses based on specific document collections
+   - *Benefits*: Reduces hallucinations, provides source attribution, enables domain-specific knowledge
+
 ## Quick Start
 
 ### 1. Setup Environment
@@ -128,12 +158,12 @@ print(f"Time: {response['processing_time']:.2f}s")
 from rag_chatbot_final import RAGConfig, RAGChatbot
 
 config = RAGConfig(
-   pinecone_api_key="your_key",
-   github_token="your_token",
-   pinecone_index_name="custom_index",
-   top_k=5,
-   similarity_threshold=0.8,
-   max_tokens=1500
+    pinecone_api_key="your_key",
+    github_token="your_token",
+    pinecone_index_name="custom_index",
+    top_k=5,
+    similarity_threshold=0.8,
+    max_tokens=1500
 )
 
 chatbot = RAGChatbot(config)
@@ -179,31 +209,31 @@ Question → Embedding → Vector Search → Context Assembly → AI Generation 
 ### Common Issues
 
 1. **"Dimension mismatch" error**
-   ```bash
-   # Solution: Ensure your Pinecone index has 384 dimensions
-   # Delete and recreate index if needed
-   ```
+    ```bash
+    # Solution: Ensure your Pinecone index has 384 dimensions
+    # Delete and recreate index if needed
+    ```
 
 2. **"No relevant documents found"**
-   ```python
-   # Lower similarity threshold
-   config.similarity_threshold = 0.5
-   
-   # Increase retrieval count
-   config.top_k = 10
-   ```
+    ```python
+    # Lower similarity threshold
+    config.similarity_threshold = 0.5
+    
+    # Increase retrieval count
+    config.top_k = 10
+    ```
 
 3. **"Embeddings model not found"**
-   ```bash
-   # Install required packages
-   pip install sentence-transformers torch
-   ```
+    ```bash
+    # Install required packages
+    pip install sentence-transformers torch
+    ```
 
 4. **"Pinecone index not found"**
-   ```bash
-   # Run ingestion script first
-   python pinecone_ingestion.py
-   ```
+    ```bash
+    # Run ingestion script first
+    python pinecone_ingestion.py
+    ```
 
 ### Debug Mode
 
@@ -277,4 +307,4 @@ This project is open source. Please ensure you comply with the licenses of:
 
 ---
 
-**Happy chatting!**
+**Happy chatting with your intelligent ERP assistant!**
