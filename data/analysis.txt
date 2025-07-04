@@ -1,0 +1,162 @@
+ERP System Analysis
+1. Overview
+The ERP system is designed to manage all aspects of a business, including inventory, products, sales, purchases, clients, suppliers, and notifications. It provides dynamic reporting for performance analysis and process optimization.
+
+2. Modules Analysis
+2.1 Inventory Module
+Entities:
+Inventory: Represents warehouses or branches.
+Attributes: branch_id (F.K), address_id (F.K), name.
+Damaged Products: Tracks damaged items.
+Attributes: product_id (F.K), quantity, reason, date.
+Pages:
+Main Page: Displays all inventories with CRUD options, search/filter, and export functionality.
+View Inventory Page: Shows details of a single inventory, including the number of products and damaged items.
+Transfer Page: Allows transferring products between inventories.
+Import Page: Supports importing product data from files (CSV, PDF).
+Damaged Products Page: Displays a list of damaged products with navigation to detailed product pages.
+Extra Actions:
+Alerts when product quantity falls below the minimum threshold.
+Alerts when product expiry dates approach.
+
+2.2 Product Module
+Entities:
+Category:
+Attributes: name, description, code, parent_category_id (F.K), inventory_id (F.K).
+Product:
+Attributes: name, description, cost, lowest_price, highest_price, quantity, type, barcode_id (F.K), main_photo, photos, inventory_id (F.K), unit_id (F.K), category_id (F.K), brand, supplier_id (F.K), isDamaged.
+Barcode:
+Attributes: number, width, height.
+Product Unit:
+Attributes: unit_name (derived from predefined system units).
+Pages:
+Main Page: Displays all products with CRUD options, search/filter, and export functionality.
+Returns Page: Tracks all returned products with CRUD options and filtering/export.
+Barcode Page: Lists all barcodes with CRUD options, search/filter, and export.
+Product Units Page: Displays all units with CRUD options and filtering/export.
+
+2.3 Sales Module
+Entities:
+Order:
+Attributes: timestamp, user_id, client_id, branch_id (F.K), inventory_id (F.K), status (pending, completed, canceled).
+Order Items:
+Attributes: order_id (F.K), product_id (F.K), quantity, unit_price, total_price.
+Returned Order:
+Attributes: order_id (F.K), reason.
+Returned Order Items:
+Attributes: returned_order_id (F.K), product_id (F.K), quantity, unit_price, total_price.
+Payment Method.
+Pages:
+Main Page: Displays all recent orders with CRUD options, search/filter, and export functionality.
+Return Order Page: Manages returned orders and provides CRUD options.
+Reports:
+Daily Sales.
+Monthly Sales.
+Most-Selling Products.
+
+2.4 Purchases Module
+Entities:
+Purchase:
+Attributes: timestamp, user_id, supplier_id (F.K), product_list, status (pending, completed, returned, canceled).
+Column: order no, user name, client name, total price, Branch ,status
+Purchase Items:
+Attributes: purchase_id (F.K), product_id (F.K), quantity, unit_price, total_price.
+Returned Purchases:
+Attributes: purchase_id (F.K), reason.
+Returned Purchase Items:
+Attributes: returned_purchase_id (F.K), product_id (F.K), quantity, unit_price, total_price.
+Pages:
+Main Page: Displays all recent purchases with CRUD options, search/filter, and export functionality.
+Returned Purchases Page: Tracks returned purchase orders with CRUD options.
+
+2.5 User Module
+Entities:
+User:
+Attributes: name, gender, phone_number, email, username (unique), password, role_id (F.K).
+Role:
+Attributes: name, description, permissions_list.
+Permission:
+Attributes: name, description, controller, action (e.g., Product-View, Product-Add).
+Pages:
+Main User Page: Displays all users with CRUD options, search/filter, and export functionality.
+Roles Page: Manages all roles with CRUD options and filtering/export.
+
+2.6 Client Module
+Entities:
+Client:
+Attributes: name, email, phone_number, address_id (F.K).
+Pages:
+Main Page: Displays all clients with CRUD options, search/filter, and export functionality.
+Client Report Page: Provides detailed reports for each client.
+
+2.7 Supplier Module
+Entities:
+Supplier:
+Attributes: name, email, phone_number, address_id (F.K).
+Pages:
+Main Page: Displays all suppliers with CRUD options, search/filter, and export functionality.
+Supplier Report Page: Provides detailed reports for each supplier.
+
+3. Workflows
+3.1 Sales Order Workflow
+The customer requests a product or service.
+The employee enters the order into the system, specifying products, quantities, and discounts.
+The system verifies product availability and conditions.
+Once approved, an invoice is generated for the customer.
+The order is sent for delivery and status updates are shared.
+If the customer initiates a return, the system tracks and updates inventory.
+3.2 Purchase Order Workflow
+Employees create a purchase request specifying required items.
+The request is reviewed and approved by management.
+An official purchase order is generated and sent to the supplier.
+Upon delivery, the system updates inventory.
+If items are damaged, a return request is initiated, and inventory is adjusted.
+
+4. Reports Module
+Reports Types:
+Sales Reports: Daily, Monthly, Best Sellers.
+Purchase Reports: Completed, Returned.
+Customer Reports.
+Supplier Reports.
+Inventory Reports.
+Export Options: PDF, Excel, CSV.
+
+5. Notifications
+For Users:
+Low stock alerts.
+New purchase request created
+Sales target reminders.
+Scheduled task reminders.
+For Clients:
+Order status updates.
+Promotional offers.
+For Suppliers:
+Notifications for new purchase orders or returns.
+6. Services
+Audit Logs:
+Tracks all operations with timestamps and user details.
+Column: number of log, user, action, time 
+Offers and Discounts:
+Supports invoice-level and product-level discounts.
+Auto-activates promotions (e.g., "Buy 2, Get 1 Free").
+Column: number of offer, name, description, start date, end date, expire.
+Invoice Templates:
+Customizable templates with logos and text styles.
+
+7. OCR
+Steps of Intelligent Purchase read
+1- using OpenCV to deskew, denoise, and binarize images, which improves the quality
+2-  Extract Text from Invoices (OCR): Tesseract/paddle paddle
+3- Training an NER (Named Entity Recognition) model to Extract Structured Data using NLP: spaCy library
+4- Integrate with Nest API
+
+Implementing automated invoice processing within our ERP system follows a structured methodology comprising six key phases. First, data acquisition involves ingesting invoices in diverse formats (e.g., PDFs, scanned images) and preprocessing them using computer vision techniques such as binarization, deskewing, and noise reduction via OpenCV to enhance the OCR accuracy. Second, we use Tesseract, the open-source OCR engine, to extract text. Tessaract is augmented by language packs to handle multilingual content. Third, layout analysis employs LayoutLM, a transformer-based model, to segment documents into semantic regions (e.g., supplier details, line items) and detect tabular structures. Fourth, named entity recognition (NER) utilizes the fine-tuned NLP model spaCy to extract structured entities (e.g., invoice numbers, dates, totals) from the unstructured text. Fifth, validation and enrichment integrate rule-based checks (e.g., arithmetic validation of totals) and fuzzy string matching against ERP master data (e.g., supplier databases) to ensure consistency. Finally, the backend integration maps extracted entities to system-specific schemas and deploys RESTful APIs for automated data ingestion, with fallback mechanisms for human-in-the-loop validation of low-confidence predictions. This pipeline addresses challenges such as heterogeneous invoice formats and OCR noise through machine learning.
+
+8. AI Agent
+We are utilizing free and open-source technologies to develop the intelligent AI agent for our ERP system. The process begins by systematically defining the agent’s objectives and use case scenarios that align with the system's capabilities. Rasa, an appropriate open-source natural language processing platform, is selected for this task. Rasa is installed and configured, following which user intents, entities, and dialogue flows are meticulously designed to enable effective interaction. The integration with the backend is achieved through API endpoints, allowing the AI agent to access and manipulate enterprise data as needed. An open-source chat interface is embedded within the frontend, establishing seamless communication between end-users and the AI agent via REST protocols. Continuous improvement is facilitated through the analysis of conversation logs and incremental refinement of intents and responses, thereby enhancing the AI agent's accuracy and user satisfaction over time.
+
+
+Figma: https://www.figma.com/design/j3NVikcyI5G9b8nBcsT2xp/Grad-Project?node-id=0-1&p=f		
+Frontend: https://graduation-project-client-iota.vercel.app/
+Backend: http://172.178.115.160:4444/api/v1/docs/swagger
+
